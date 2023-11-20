@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 let pauseStartTime;
 let pausedElapsedTime = 0; 
-
+let totalPausedTime = 0;
 let isLevel2 = false;
 let level2DisplayTime = 1000; // Durasi tampilan tulisan Level 2 dalam milidetik
 let level2StartTime;
@@ -322,7 +322,6 @@ startButton.addEventListener('click', () => {
 });
 
 // Fungsi untuk mendeteksi tabrakan
-
 function detectCollision() {
   if (isGameRunning) {
     const distanceToCheckpoint = cube.position.distanceTo(checkpointPosition);
@@ -376,13 +375,23 @@ function detectCollision() {
         if (distanceXToObstacle < obstacleWidth / 2 && distanceZToObstacle < 3) {
           // Reset posisi kubus utama ke titik awal
           resetCubePosition();
+
         }
         
+      }
+      
+
+      const distanceXToAdditionalCube = Math.abs(cube.position.x - additionalCube.position.x);
+      const distanceZToAdditionalCube = Math.abs(cube.position.z - additionalCube.position.z);
+      const additionalCubeWidth = 1;
+
+      if (distanceXToAdditionalCube < additionalCubeWidth / 2 && distanceZToAdditionalCube < 2) {
+        // Reset posisi kubus utama ke titik awal
+        resetCubePosition();
       }
     }
   }
 }
-
 function resetCubePosition() {
   cube.position.set(0, 0, 50);
 }
@@ -426,34 +435,39 @@ function pauseGame() {
     overlay.appendChild(resumeButton);
   }
 
-  // Tombol QUIT
-  if (!document.querySelector('#quitButton')) {
+   // Tambahkan tombol "Quit" dan event listener untuk menutup halaman
    const quitButton = document.createElement('button');
-quitButton.id = 'quitButton';
-quitButton.textContent = 'Quit';
-quitButton.style.margin = '10px'; // Memberikan jarak antar tombol
-quitButton.style.padding = '10px 20px';
-quitButton.style.fontSize = '24px';
-quitButton.style.backgroundColor = '#f44336';
-quitButton.style.color = 'white';
-quitButton.style.border = 'none';
-quitButton.style.cursor = 'pointer';
-quitButton.addEventListener('click', () => {
-  quitGame();
-});
-overlay.appendChild(quitButton);
+   quitButton.id = 'quitButton';
+   quitButton.textContent = 'Quit';
+   quitButton.style.margin = '10px'; // Memberikan jarak antar tombol
+   quitButton.style.padding = '10px 20px';
+   quitButton.style.fontSize = '24px';
+   quitButton.style.backgroundColor = '#f44336';
+   quitButton.style.color = 'white';
+   quitButton.style.border = 'none';
+   quitButton.style.cursor = 'pointer';
+   quitButton.addEventListener('click', () => {
+     window.close(); // Menutup halaman
+   });
+   overlay.appendChild(quitButton);
+ }
+
+ function resumeGame() {
+  if (isGameRunning) {
+    return; // Tidak melakukan apa-apa jika permainan sudah berjalan
   }
-}
 
-function resumeGame() {
-  // Mengingat waktu saat permainan di-pause
-  const pauseTime = Date.now();
+  // Ambil waktu saat tombol resume ditekan
+  const resumeTime = Date.now();
 
-  // Menyimpan selisih waktu saat resume dengan waktu saat permainan di-pause
-  const timeDifference = pauseTime - pauseStartTime;
+  // Hitung selisih waktu sejak permainan di-pause
+  const pauseDuration = resumeTime - pauseStartTime;
 
-  // Mengatur waktu mulai permainan kembali dengan mengurangkan selisih waktu
-  gameStartTime -= timeDifference;
+  // Tambahkan durasi pause ke elapsed time yang di-pause
+  pausedElapsedTime += pauseDuration;
+
+  // Atur ulang waktu awal permainan
+  gameStartTime = resumeTime - pausedElapsedTime;
 
   isGameRunning = true;
   overlay.style.display = 'none';
@@ -469,8 +483,8 @@ function resumeGame() {
     overlay.removeChild(quitButton);
   }
 
-  // Mulai permainan lagi dari titik terhenti
-  startGame();
+  // Lanjutkan permainan dari keadaan di-pause
+  animate();
 }
 
 
@@ -490,8 +504,7 @@ function quitGame() {
   }
   if (quitButton) {
     overlay.removeChild(quitButton);
-  }
-}
+  }}
 
 
 // Fungsi untuk menampilkan pesan keberhasilan dan tombol "MAIN LAGI"
@@ -787,5 +800,3 @@ function animate() {
     renderer.render(scene, camera);
   }
 }
-
-
