@@ -693,34 +693,34 @@ var intervalMaju;
 var intervalKiri;
 var intervalKanan;
 
-moveForwardButton.addEventListener("mousedown", function() {
+moveForwardButton.addEventListener("touchstart", function() {
   removeAllInterval();
   intervalMaju = setInterval(function() {
     moveForward();
   }, 70);
 });
 
-moveForwardButton.addEventListener("mouseup", function() {
+moveForwardButton.addEventListener("touchand", function() {
   clearInterval(intervalMaju);
 })
 
-moveLeftButton.addEventListener("mousedown", function() {
+moveLeftButton.addEventListener("touchstart", function() {
   intervalKiri = setInterval(function() {
     moveLeft();
   }, 70);
 });
 
-moveLeftButton.addEventListener("mouseup", function() {
+moveLeftButton.addEventListener("touchand", function() {
   clearInterval(intervalKiri);
 });
 
-moveRightButton.addEventListener("mousedown", function() {
+moveRightButton.addEventListener("touchstart", function() {
   intervalKanan = setInterval(function() {
     moveRight();
   }, 70);
 });
 
-moveRightButton.addEventListener("mouseup", function() {
+moveRightButton.addEventListener("touchand", function() {
   clearInterval(intervalKanan);
 })
 
