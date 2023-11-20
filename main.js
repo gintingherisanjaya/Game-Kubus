@@ -376,7 +376,6 @@ function detectCollision() {
         if (distanceXToObstacle < obstacleWidth / 2 && distanceZToObstacle < 3) {
           // Reset posisi kubus utama ke titik awal
           resetCubePosition();
-
         }
         
       }
