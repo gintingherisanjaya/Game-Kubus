@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from './node_modules/three/src/Three';
 
 let isGameRunning = false;
 let startButtonVisible = true;
