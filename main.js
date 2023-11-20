@@ -9,6 +9,10 @@ let level2StartTime;
 // Tambahkan checkpoint di posisi (0, 0, -47)
 const checkpointPosition = new THREE.Vector3(0, 0, -5);
 
+// Mobile Configuration
+
+
+
 const level2Overlay = document.createElement('div');
 level2Overlay.id = 'level2Overlay';
 level2Overlay.style.display = 'none'; // Sembunyikan overlay
@@ -675,6 +679,22 @@ document.addEventListener('keydown', (event) => {
     default:
       break;
   }
+});
+
+const moveForwardButton = document.querySelector(".moving-option .w");
+const moveLeftButton = document.querySelector(".moving-option .a");
+const moveRightButton = document.querySelector(".moving-option .d");
+
+moveForwardButton.addEventListener("click", function() {
+  moveForward();
+});
+
+moveLeftButton.addEventListener("click", function() {
+  moveLeft();
+});
+
+moveRightButton.addEventListener("click", function() {
+  moveRight();
 });
 
 // Fungsi untuk bergerak ke depan
