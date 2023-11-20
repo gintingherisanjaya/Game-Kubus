@@ -1,7 +1,76 @@
 import * as THREE from 'three';
 
+let pauseStartTime;
+let pausedElapsedTime = 0; 
+
+let isLevel2 = false;
+let level2DisplayTime = 1000; // Durasi tampilan tulisan Level 2 dalam milidetik
+let level2StartTime;
+// Tambahkan checkpoint di posisi (0, 0, -47)
+const checkpointPosition = new THREE.Vector3(0, 0, -5);
+
+const level2Overlay = document.createElement('div');
+level2Overlay.id = 'level2Overlay';
+level2Overlay.style.display = 'none'; // Sembunyikan overlay
+level2Overlay.style.position = 'absolute';
+level2Overlay.style.top = '0';
+level2Overlay.style.left = '20';
+level2Overlay.style.width = '100%';
+level2Overlay.style.height = '100%';
+level2Overlay.style.textAlign = 'center';
+
+document.body.appendChild(level2Overlay);
+
+const level2Message = document.createElement('div');
+level2Message.id = 'level2Message';
+level2Message.style.color = 'yellow';
+level2Message.style.fontSize = '50px';
+level2Message.style.paddingTop = '50px';
+level2Overlay.appendChild(level2Message);
+
+const continueButton = document.createElement('button');
+continueButton.id = 'continueButton';
+continueButton.style.marginTop = '20px';
+continueButton.style.padding = '10px 20px';
+continueButton.style.fontSize = '24px';
+continueButton.style.backgroundColor = '#4CAF50';
+continueButton.style.color = 'black';
+continueButton.style.border = 'none';
+continueButton.style.cursor = 'pointer';
+continueButton.textContent = 'Main Lagi';
+continueButton.addEventListener('click', () => {
+  level2Overlay.style.display = 'none'; // Sembunyikan overlay pesan "Level 2" setelah tombol "Main Lagi" diklik
+  resetGame();
+});
+level2Overlay.appendChild(continueButton);
+
+
+
+// Fungsi untuk menampilkan tulisan Level 2
+function showLevel2Message() {
+  level2Overlay.style.display = 'flex'; // Menampilkan overlay
+  level2Message.innerHTML = 'Level 2';
+
+  continueButton.style.display = 'none'; // Sembunyikan tombol "Main Lagi"
+
+  // Setelah menunggu 200ms, terapkan CSS dan lakukan animasi fade
+  setTimeout(() => {
+    // Terapkan CSS untuk posisi tengah
+  
+
+    // Sembunyikan overlay setelah 2 detik
+    setTimeout(() => {
+      level2Overlay.style.display = 'none';
+    }, 200);
+  }, 200);
+}
+
+
+
+
 let isGameRunning = false;
 let startButtonVisible = true;
+let gameStartTime = null;
 // Variabel untuk pergerakan vertikal pada objek persegi panjang
 let verticalPosition = 0;
 let verticalSpeed = 0.03; // Kecepatan pergerakan vertikal
@@ -16,6 +85,53 @@ const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerH
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+// Membuat geometri kubus baru (merah)
+const redKubusGeometry = new THREE.BoxGeometry(17, 1, 15); // Panjang 19, tinggi 1, lebar 2
+const redKubusMaterial = new THREE.MeshBasicMaterial({ color: 0xFF0000 }); // Warna merah
+const redKubus = new THREE.Mesh(redKubusGeometry, redKubusMaterial);
+
+// Mengatur posisi redKubus
+redKubus.position.set(-2, -1, -20);
+
+// Membuat geometri kubus baru (merah)
+const redKubusGeometry2 = new THREE.BoxGeometry(17, 1, 15); // Panjang 17, tinggi 1, lebar 15
+const redKubusMaterial2 = new THREE.MeshBasicMaterial({ color: 0xFF0000 }); // Warna merah
+const redKubus2 = new THREE.Mesh(redKubusGeometry2, redKubusMaterial2);
+
+// Mengatur posisi redKubus2
+redKubus2.position.set(2, -1, -39.4);
+
+// Menerapkan bayangan pada redKubus2
+redKubus2.castShadow = true;
+redKubus2.receiveShadow = true;
+
+// Menambahkan redKubus2 ke dalam scene
+scene.add(redKubus2);
+
+
+// Menerapkan bayangan pada redKubus
+redKubus.castShadow = true;
+redKubus.receiveShadow = true;
+
+// Menambahkan redKubus ke dalam scene
+scene.add(redKubus);
+
+
+// Membuat geometri kubus baru (biru cerah)
+const kubuscheckGeometry = new THREE.BoxGeometry(19, 1, 2); // Panjang 1, tinggi 2, lebar 1
+const kubuscheckMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00}); // Warna biru cerah
+const kubuscheck = new THREE.Mesh(kubuscheckGeometry, kubuscheckMaterial);
+
+// Mengatur posisi kubuscheck
+kubuscheck.position.set(0, -1, -5);
+
+// Menerapkan bayangan pada kubuscheck
+kubuscheck.castShadow = true;
+kubuscheck.receiveShadow = true;
+
+// Menambahkan kubuscheck ke dalam scene
+scene.add(kubuscheck);
 
 // Memuat gambar atau tekstur sebagai latar belakang
 const backgroundTextureLoader = new THREE.TextureLoader();
@@ -44,6 +160,8 @@ function updateCamera() {
 }
 updateCamera();
 
+
+
 // Membuat geometri lubang dan material dengan tekstur
 const holeGeometry = new THREE.CircleGeometry(10, 20);
 const textureLoader = new THREE.TextureLoader();
@@ -51,7 +169,7 @@ const holeTexture = textureLoader.load('tujuan.png');
 const holeMaterial = new THREE.MeshBasicMaterial({ map: holeTexture });
 const hole = new THREE.Mesh(holeGeometry, holeMaterial);
 scene.add(hole);
-hole.position.set(0, 0, -20);
+hole.position.set(0, 0, -70);
 
 // Membuat geometri persegi panjang
 const obstacleGeometry = new THREE.BoxGeometry(20, 1, 0.75); // Panjang 20, lebar 1, tinggi 1
@@ -91,9 +209,9 @@ floor.rotation.x = Math.PI / 2;
 floor.position.y = -1;
 floor.receiveShadow = true;
 
-// Variabel untuk mengontrol lompatan
-const jumpHeight = 4;
-let isJumping = false;
+
+
+
 
 // Variabel untuk kubus tambahan
 let additionalCube;
@@ -206,43 +324,70 @@ startButton.addEventListener('click', () => {
 // Fungsi untuk mendeteksi tabrakan
 function detectCollision() {
   if (isGameRunning) {
-    // Jika kubus utama bersentuhan dengan lubang
+    const distanceToCheckpoint = cube.position.distanceTo(checkpointPosition);
+
+    if (distanceToCheckpoint < 5) {
+      // Kubus utama mencapai checkpoint, tampilkan tulisan Level 2
+      isLevel2 = true;
+      level2StartTime = Date.now();
+      showLevel2Message();
+    }
+
+    const distanceXToRedKubus = Math.abs(cube.position.x - redKubus.position.x);
+    const distanceZToRedKubus = Math.abs(cube.position.z - redKubus.position.z);
+    const redKubusWidth = 17;
+
+    if (distanceXToRedKubus < redKubusWidth / 1.5 && distanceZToRedKubus < 8.4) {
+      // Reset posisi kubus utama ke titik checkpoint (0, 0, -5)
+      cube.position.copy(checkpointPosition);
+    }
+
+    const distanceXToRedKubus2 = Math.abs(cube.position.x - redKubus2.position.x);
+    const distanceZToRedKubus2 = Math.abs(cube.position.z - redKubus2.position.z);
+    const redKubus2Width = 17;
+
+    if (distanceXToRedKubus2 < redKubus2Width / 2 && distanceZToRedKubus2 < 7) {
+      // Reset posisi kubus utama ke titik checkpoint (0, 0, -5)
+      cube.position.copy(checkpointPosition);
+    }
+
     const distanceX = cube.position.x - hole.position.x;
     const distanceZ = cube.position.z - hole.position.z;
     const holeRadius = 20;
 
     if (distanceX < holeRadius && distanceZ < 1) {
-      // Tampilkan pesan keberhasilan
       showSuccessMessage();
+      
     } else {
-      // Cek apakah objek obstacle berada di bawah kubus utama
       if (obstacle.position.y <= 0) {
-        // Jika kubus utama bersentuhan dengan persegi panjang (obstacle)
         const distanceXToObstacle = Math.abs(cube.position.x - obstacle.position.x);
         const distanceZToObstacle = Math.abs(cube.position.z - obstacle.position.z);
-        const obstacleWidth = 20; // Lebar rintangan
+        const obstacleWidth = 20;
 
         if (distanceXToObstacle < obstacleWidth / 2 && distanceZToObstacle < 3) {
-          // Tampilkan pesan kegagalan
-          showFailureMessage();
-        } else {
-          // Reset status kegagalan jika tidak ada tabrakan
-          isFailed = false;
-        }
-      }
+          // Reset posisi kubus utama ke titik awal
+          resetCubePosition();
 
-      // Cek apakah objek kubus tambahan bersentuhan dengan kubus utama
+        }
+        
+      }
+      
+
       const distanceXToAdditionalCube = Math.abs(cube.position.x - additionalCube.position.x);
       const distanceZToAdditionalCube = Math.abs(cube.position.z - additionalCube.position.z);
-      const additionalCubeWidth = 1; // Lebar kubus tambahan
+      const additionalCubeWidth = 1;
 
       if (distanceXToAdditionalCube < additionalCubeWidth / 2 && distanceZToAdditionalCube < 2) {
-        // Tampilkan pesan kegagalan
-        showFailureMessage();
+        // Reset posisi kubus utama ke titik awal
+        resetCubePosition();
       }
     }
   }
 }
+function resetCubePosition() {
+  cube.position.set(0, 0, 50);
+}
+
 
 // Event listener untuk tombol "esc"
 // document.addEventListener('keydown', (event) => {
@@ -251,7 +396,9 @@ function detectCollision() {
 //   }
 // });
 
+
 function pauseGame() {
+  pauseStartTime = Date.now();
   isGameRunning = false;
 
   // Hentikan permainan, tampilkan overlay dan tombol "RESUME" dan "Quit"
@@ -300,6 +447,15 @@ overlay.appendChild(quitButton);
 }
 
 function resumeGame() {
+  // Mengingat waktu saat permainan di-pause
+  const pauseTime = Date.now();
+
+  // Menyimpan selisih waktu saat resume dengan waktu saat permainan di-pause
+  const timeDifference = pauseTime - pauseStartTime;
+
+  // Mengatur waktu mulai permainan kembali dengan mengurangkan selisih waktu
+  gameStartTime -= timeDifference;
+
   isGameRunning = true;
   overlay.style.display = 'none';
   restartButton.style.display = 'block';
@@ -317,6 +473,7 @@ function resumeGame() {
   // Mulai permainan lagi dari titik terhenti
   startGame();
 }
+
 
 
 function quitGame() {
@@ -358,24 +515,29 @@ function showSuccessMessage() {
 }
 
 
-function showFailureMessage() {
-  overlay.style.display = 'block';
-  message.innerHTML = 'MAAF ANDA GAGAL';
-  restartButton.innerHTML = 'ULANGI';
-  restartButton.style.display = 'absolute';
-  message.style.display = 'block';
-  isGameRunning = false;
-}
+//function showFailureMessage() {
+ // overlay.style.display = 'block';
+  //message.innerHTML = 'MAAF ANDA GAGAL';
+ // restartButton.innerHTML = 'ULANGI';
+ // restartButton.style.display = 'absolute';
+ // message.style.display = 'block';
+ // isGameRunning = false;
+//}
 
+// Variabel untuk mengontrol lompatan
+const jumpHeight = 2.5;
+
+
+// Variabel untuk mengatur kecepatan lompatan vertikal
+const jumpSpeed = 0.1;
+let isJumping = false;
 // Fungsi untuk mengatur lompatan
 function jump() {
   isJumping = true;
-  const jumpSpeed = 0.1;
 
   function jumpAnimation() {
     if (cube.position.y < jumpHeight) {
       cube.position.y += jumpSpeed;
-      cube.position.z -= jumpSpeed;
     } else {
       fall();
     }
@@ -385,15 +547,12 @@ function jump() {
     if (cube.position.y < jumpHeight) {
       requestAnimationFrame(jumpLoop);
       jumpAnimation();
-      updateCamera();
     } else {
       fall();
     }
   }
 
   jumpLoop();
-  // cube.position.z -= 2;
-  // updateCamera();
 }
 
 // Event listener untuk tombol "MAIN LAGI"
@@ -427,12 +586,11 @@ restartButton.addEventListener('click', () => {
 // Kecepatan pergerakan bola
 const moveSpeed = 0.4;
 
-// Variabel untuk mengukur waktu permainan
-let gameStartTime = null;
+
 
 // Fungsi untuk menghitung waktu permainan
 function calculateGameTime() {
-  if (gameStartTime) {
+  if (gameStartTime && isGameRunning) {
     const currentTime = Date.now();
     const elapsedTime = (currentTime - gameStartTime) / 1000;
     timerElement.textContent = `Waktu: ${elapsedTime.toFixed(2)} detik`;
@@ -440,13 +598,11 @@ function calculateGameTime() {
 }
 
 // Fungsi untuk memulai permainan
-
 function startGame() {
-
   gameStartTime = Date.now();
   isGameRunning = true;
   animate();
-  
+
   // Sembunyikan tombol "Start" setelah permainan dimulai
   startButton.style.display = 'none';
 }
@@ -512,7 +668,7 @@ document.addEventListener('keydown', (event) => {
 // Fungsi untuk bergerak ke depan
 function moveForward() {
   // Periksa apakah kubus utama masih berada di dalam batas lantai sebelum bergerak
-  if (cube.position.z - moveSpeed >= -22) {
+  if (cube.position.z - moveSpeed >= -71) {
     cube.position.z -= moveSpeed;
     updateCamera();
   }
@@ -553,7 +709,6 @@ function fall() {
   function fallAnimation() {
     if (cube.position.y > 0) {
       cube.position.y -= fallSpeed;
-      cube.position.z -= fallSpeed;
     } else {
       isJumping = false;
       cube.position.y = 0;
@@ -564,7 +719,6 @@ function fall() {
     if (cube.position.y > 0) {
       requestAnimationFrame(fallLoop);
       fallAnimation();
-      updateCamera();
     } else {
       isJumping = false;
       cube.position.y = 0;
@@ -572,10 +726,6 @@ function fall() {
   }
 
   fallLoop();
-  // alert(obstacle.position.y);
-
-  // cube.position.z -= 2;
-  // updateCamera();
 }
 
 // Memanggil fungsi createCube untuk membuat kubus tambahan
@@ -627,6 +777,13 @@ function animate() {
     additionalCube.position.x = horizontalPosition;
 
     // Tambahkan logika lainnya sesuai kebutuhan
+
+    if (isLevel2) {
+      const elapsedTime = Date.now() - level2StartTime;
+      if (elapsedTime > level2DisplayTime) {
+        isLevel2 = false; // Reset status Level 2 setelah durasi tampilan berakhir
+      }
+    }
 
     renderer.render(scene, camera);
   }
