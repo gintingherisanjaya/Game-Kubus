@@ -322,9 +322,18 @@ startButton.addEventListener('click', () => {
 });
 
 // Fungsi untuk mendeteksi tabrakan
+
 function detectCollision() {
   if (isGameRunning) {
     const distanceToCheckpoint = cube.position.distanceTo(checkpointPosition);
+    const distanceXToKubusCheck = Math.abs(cube.position.x - kubuscheck.position.x);
+    const distanceZToKubusCheck = Math.abs(cube.position.z - kubuscheck.position.z);
+    const kubusCheckWidth = 19;
+
+    if (distanceXToKubusCheck < kubusCheckWidth / 1.9 && distanceZToKubusCheck < 1) {
+      // Call showLevel2Message when the main cube collides with kubuscheck
+      showLevel2Message();
+    }
 
     if (distanceToCheckpoint < 5) {
       // Kubus utama mencapai checkpoint, tampilkan tulisan Level 2
@@ -337,7 +346,7 @@ function detectCollision() {
     const distanceZToRedKubus = Math.abs(cube.position.z - redKubus.position.z);
     const redKubusWidth = 17;
 
-    if (distanceXToRedKubus < redKubusWidth / 1.5 && distanceZToRedKubus < 8.4) {
+    if (distanceXToRedKubus < redKubusWidth / 1.9 && distanceZToRedKubus < 8.3) {
       // Reset posisi kubus utama ke titik checkpoint (0, 0, -5)
       cube.position.copy(checkpointPosition);
     }
@@ -346,7 +355,7 @@ function detectCollision() {
     const distanceZToRedKubus2 = Math.abs(cube.position.z - redKubus2.position.z);
     const redKubus2Width = 17;
 
-    if (distanceXToRedKubus2 < redKubus2Width / 2 && distanceZToRedKubus2 < 7) {
+    if (distanceXToRedKubus2 < redKubus2Width / 1.9 && distanceZToRedKubus2 < 8.4) {
       // Reset posisi kubus utama ke titik checkpoint (0, 0, -5)
       cube.position.copy(checkpointPosition);
     }
@@ -371,19 +380,10 @@ function detectCollision() {
         }
         
       }
-      
-
-      const distanceXToAdditionalCube = Math.abs(cube.position.x - additionalCube.position.x);
-      const distanceZToAdditionalCube = Math.abs(cube.position.z - additionalCube.position.z);
-      const additionalCubeWidth = 1;
-
-      if (distanceXToAdditionalCube < additionalCubeWidth / 2 && distanceZToAdditionalCube < 2) {
-        // Reset posisi kubus utama ke titik awal
-        resetCubePosition();
-      }
     }
   }
 }
+
 function resetCubePosition() {
   cube.position.set(0, 0, 50);
 }
