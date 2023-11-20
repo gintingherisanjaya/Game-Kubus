@@ -58,19 +58,16 @@ function showLevel2Message() {
   continueButton.style.display = 'none'; // Sembunyikan tombol "Main Lagi"
 
   // Setelah menunggu 200ms, terapkan CSS dan lakukan animasi fade
-  setTimeout(() => {
+  // setTimeout(() => {
     // Terapkan CSS untuk posisi tengah
   
-
     // Sembunyikan overlay setelah 2 detik
     setTimeout(() => {
       level2Overlay.style.display = 'none';
-    }, 200);
-  }, 200);
+      removeAllInterval();
+    }, 1000);
+  // }, 200);
 }
-
-
-
 
 let isGameRunning = false;
 let startButtonVisible = true;
@@ -396,7 +393,15 @@ function detectCollision() {
     }
   }
 }
+
+function removeAllInterval() {
+  clearInterval(intervalMaju);
+  clearInterval(intervalKiri);
+  clearInterval(intervalKanan);
+}
+
 function resetCubePosition() {
+  removeAllInterval();
   cube.position.set(0, 0, 50);
 }
 
@@ -684,18 +689,40 @@ document.addEventListener('keydown', (event) => {
 const moveForwardButton = document.querySelector(".moving-option .w");
 const moveLeftButton = document.querySelector(".moving-option .a");
 const moveRightButton = document.querySelector(".moving-option .d");
+var intervalMaju;
+var intervalKiri;
+var intervalKanan;
 
-moveForwardButton.addEventListener("click", function() {
-  moveForward();
+moveForwardButton.addEventListener("mousedown", function() {
+  removeAllInterval();
+  intervalMaju = setInterval(function() {
+    moveForward();
+  }, 70);
 });
 
-moveLeftButton.addEventListener("click", function() {
-  moveLeft();
+moveForwardButton.addEventListener("mouseup", function() {
+  clearInterval(intervalMaju);
+})
+
+moveLeftButton.addEventListener("mousedown", function() {
+  intervalKiri = setInterval(function() {
+    moveLeft();
+  }, 70);
 });
 
-moveRightButton.addEventListener("click", function() {
-  moveRight();
+moveLeftButton.addEventListener("mouseup", function() {
+  clearInterval(intervalKiri);
 });
+
+moveRightButton.addEventListener("mousedown", function() {
+  intervalKanan = setInterval(function() {
+    moveRight();
+  }, 70);
+});
+
+moveRightButton.addEventListener("mouseup", function() {
+  clearInterval(intervalKanan);
+})
 
 // Fungsi untuk bergerak ke depan
 function moveForward() {
