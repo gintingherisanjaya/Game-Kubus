@@ -87,18 +87,44 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Membuat geometri kubus baru (merah)
-const redKubusGeometry = new THREE.BoxGeometry(17, 1, 15); // Panjang 19, tinggi 1, lebar 2
-const redKubusMaterial = new THREE.MeshBasicMaterial({ color: 0xFF0000 }); // Warna merah
+// // Membuat geometri kubus baru (merah) / kubus1
+// const redKubusGeometry = new THREE.BoxGeometry(17, 1, 15); // Panjang 19, tinggi 1, lebar 2
+// const redKubusMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Warna merah
+// const redKubus = new THREE.Mesh(redKubusGeometry, redKubusMaterial);
+
+// Membuat geometri kubus baru
+const redKubusGeometry = new THREE.BoxGeometry(17, 1, 15); // Panjang 17, tinggi 1, lebar 15
+
+// Membuat material dengan tekstur menggunakan TextureLoader
+const textureLoaderx = new THREE.TextureLoader();
+const texturex = textureLoaderx.load('galaksi.png'); // Ganti 'lokasi_gambar_anda.jpg' dengan path file gambar Anda
+
+const redKubusMaterial = new THREE.MeshBasicMaterial({ map: texturex });
+
+// Mengganti material kubus dengan material yang memiliki tekstur
 const redKubus = new THREE.Mesh(redKubusGeometry, redKubusMaterial);
+
+
 
 // Mengatur posisi redKubus
 redKubus.position.set(-2, -1, -20);
 
-// Membuat geometri kubus baru (merah)
+// // Membuat geometri kubus baru (merah)
+// const redKubusGeometry2 = new THREE.BoxGeometry(17, 1, 15); // Panjang 17, tinggi 1, lebar 15
+// const redKubusMaterial2 = new THREE.MeshBasicMaterial({ color: 0xFF0000 }); // Warna merah
+// const redKubus2 = new THREE.Mesh(redKubusGeometry2, redKubusMaterial2);
+
+// Membuat geometri kubus baru
 const redKubusGeometry2 = new THREE.BoxGeometry(17, 1, 15); // Panjang 17, tinggi 1, lebar 15
-const redKubusMaterial2 = new THREE.MeshBasicMaterial({ color: 0xFF0000 }); // Warna merah
+
+// Membuat material dengan tekstur menggunakan TextureLoader
+const texture = new THREE.TextureLoader().load('galaksi.png'); // Ganti 'lokasi_gambar_anda.jpg' dengan path file gambar Anda
+
+const redKubusMaterial2 = new THREE.MeshBasicMaterial({ map: texture });
+
+// Membuat kubus menggunakan geometri dan material yang telah dibuat
 const redKubus2 = new THREE.Mesh(redKubusGeometry2, redKubusMaterial2);
+
 
 // Mengatur posisi redKubus2
 redKubus2.position.set(2, -1, -39.4);
@@ -146,7 +172,7 @@ renderer.shadowMap.enabled = true;
 const geometry = new THREE.BoxGeometry(1, 1, 1);
 
 // Membuat objek kubus dengan geometri dan material yang telah dibuat
-const cube = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('kubusm.jpg') }));
+const cube = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('venus.jpeg') }));
 scene.add(cube);
 cube.receiveShadow = true;
 cube.castShadow = true;
@@ -525,9 +551,28 @@ function showSuccessMessage() {
   // Mengambil waktu permainan saat ini
   const currentTime = Date.now();
   const elapsedTime = (currentTime - gameStartTime) / 1000;
+  var score = 0;
+  var message = "NO POINT";
+
+  if(elapsedTime <= 10) {
+    score = 100;
+    message = "EXCELLENT";
+  } else if(elapsedTime <= 15) {
+    score = 90;
+    message = "GREAT";
+  } else if(elapsedTime <= 25) {
+    score = 80;
+    message = "GOOD"
+  } else if(elapsedTime <= 35) {
+    score = 70;
+    message = "NO BAD";
+  } else {
+    score = 60;
+    message = "YOU CAN BE BETTER NEXT TIME";
+  }
 
   // Menampilkan skor waktu
-  successMessage.innerHTML += '<br>Waktu : ' + elapsedTime.toFixed(2) + ' detik';
+  successMessage.innerHTML += '<br>Waktu : ' + elapsedTime.toFixed(2) + ' detik' + `<br> ${message} <br> Point Kamu : ${score}`;
 
   isGameRunning = false;
   if (startButtonVisible) {

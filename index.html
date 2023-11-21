@@ -4,17 +4,27 @@
 		<meta charset="utf-8">
 		<title>GAME KUBUS KELOMPOK 1</title>
 		<style>
+
+			@media only screen and (max-width: 600px) {
+				.moving-option {
+					display: block;
+				}
+			}
+
+
 			body { margin: 0; }
 
 			.moving-option {
 				position: absolute;
 				right: 0px;
+				left: 0px;
 				bottom: 0px;
+				display: none;
 			}
 
 			.moving-option button {
-				font-size: 30px;
-				padding: 10px;
+				font-size: 70px;
+				padding: 20px;
 				background-color: red;
 				color: white;
 				border: none;
@@ -32,6 +42,8 @@
 				display: flex;
 				justify-content: center;
 			}
+
+
 
 		</style>
 	</head>
