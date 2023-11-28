@@ -4,65 +4,16 @@
 		<meta charset="utf-8">
 		<title>GAME KUBUS KELOMPOK 1</title>
 		<style>
-
-			@media only screen and (max-width: 600px) {
-				.moving-option {
-					display: block;
-				}
-			}
-
-
-			body { margin: 0; }
-
-			.moving-option {
-				position: absolute;
-				right: 0px;
-				left: 0px;
-				bottom: 0px;
-				display: none;
-			}
-
-			.moving-option button {
-				font-size: 70px;
-				padding: 20px;
-				background-color: red;
-				color: white;
-				border: none;
+			body {
 				margin: 0px;
-				border-radius: 50%;
-				width: 70px;
-				
-				&:active {
-					background-color: green;
-					color: gold;
-				}
 			}
-
-			.moving-option .ln1 {
-				display: flex;
-				justify-content: center;
-			}
-
-
-
 		</style>
 	</head>
 	<body>
-		<div class="moving-option">
-			<div class="ln1">
-				<button class="w">
-					^
-				</button>
-			</div>
-			<div class="ln2">
-				<button class="a">
-					&lt;
-				</button>
-				<button class="d">
-					&gt;
-				</button>	
-			</div>
-		</div>
+		<!-- Link Untuk Production -->
 		<script type="module" src="./dist/bundle.js"></script>
+
+		<!-- Link Untuk Development -->
+		<!-- <script type="module" src="./main.js"></script> -->
 	</body>
 </html>

@@ -2,16 +2,11 @@ import * as THREE from 'three';
 
 let pauseStartTime;
 let pausedElapsedTime = 0; 
-let totalPausedTime = 0;
 let isLevel2 = false;
 let level2DisplayTime = 1000; // Durasi tampilan tulisan Level 2 dalam milidetik
 let level2StartTime;
 // Tambahkan checkpoint di posisi (0, 0, -47)
 const checkpointPosition = new THREE.Vector3(0, 0, -5);
-
-// Mobile Configuration
-
-
 
 const level2Overlay = document.createElement('div');
 level2Overlay.id = 'level2Overlay';
@@ -48,25 +43,16 @@ continueButton.addEventListener('click', () => {
 });
 level2Overlay.appendChild(continueButton);
 
-
-
 // Fungsi untuk menampilkan tulisan Level 2
 function showLevel2Message() {
   level2Overlay.style.display = 'flex'; // Menampilkan overlay
   level2Message.innerHTML = 'Level 2';
 
-  continueButton.style.display = 'none'; // Sembunyikan tombol "Main Lagi"
-
-  // Setelah menunggu 200ms, terapkan CSS dan lakukan animasi fade
-  // setTimeout(() => {
-    // Terapkan CSS untuk posisi tengah
-  
-    // Sembunyikan overlay setelah 2 detik
+  continueButton.style.display = 'none'; // Sembunyikan tombol "Main Lagi"  
     setTimeout(() => {
       level2Overlay.style.display = 'none';
       removeAllInterval();
     }, 1000);
-  // }, 200);
 }
 
 let isGameRunning = false;
@@ -87,11 +73,6 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// // Membuat geometri kubus baru (merah) / kubus1
-// const redKubusGeometry = new THREE.BoxGeometry(17, 1, 15); // Panjang 19, tinggi 1, lebar 2
-// const redKubusMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Warna merah
-// const redKubus = new THREE.Mesh(redKubusGeometry, redKubusMaterial);
-
 // Membuat geometri kubus baru
 const redKubusGeometry = new THREE.BoxGeometry(17, 1, 15); // Panjang 17, tinggi 1, lebar 15
 
@@ -104,15 +85,8 @@ const redKubusMaterial = new THREE.MeshBasicMaterial({ map: texturex });
 // Mengganti material kubus dengan material yang memiliki tekstur
 const redKubus = new THREE.Mesh(redKubusGeometry, redKubusMaterial);
 
-
-
 // Mengatur posisi redKubus
 redKubus.position.set(-2, -1, -20);
-
-// // Membuat geometri kubus baru (merah)
-// const redKubusGeometry2 = new THREE.BoxGeometry(17, 1, 15); // Panjang 17, tinggi 1, lebar 15
-// const redKubusMaterial2 = new THREE.MeshBasicMaterial({ color: 0xFF0000 }); // Warna merah
-// const redKubus2 = new THREE.Mesh(redKubusGeometry2, redKubusMaterial2);
 
 // Membuat geometri kubus baru
 const redKubusGeometry2 = new THREE.BoxGeometry(17, 1, 15); // Panjang 17, tinggi 1, lebar 15
@@ -237,9 +211,6 @@ floor.position.y = -1;
 floor.receiveShadow = true;
 
 
-
-
-
 // Variabel untuk kubus tambahan
 let additionalCube;
 let additionalCubeSpeed = 0.1;
@@ -266,17 +237,6 @@ message.style.color = 'white';
 message.style.fontSize = '36px';
 message.style.paddingTop = '50px';
 overlay.appendChild(message);
-
-const restartButton = document.createElement('button');
-restartButton.id = 'restartButton';
-restartButton.style.marginTop = '20px';
-restartButton.style.padding = '10px 20px';
-restartButton.style.fontSize = '24px';
-restartButton.style.backgroundColor = '#4CAF50';
-restartButton.style.color = 'white';
-restartButton.style.border = 'none';
-restartButton.style.cursor = 'pointer';
-overlay.appendChild(restartButton);
 
 // Tambahkan variabel-variabel ini di bagian atas kode Anda
 const successOverlay = document.createElement('div');
@@ -340,14 +300,6 @@ startButton.addEventListener('click', () => {
 });
 overlay.appendChild(startButton);
 
-// Event listener untuk tombol "Start"
-startButton.addEventListener('click', () => {
-  startGame();
-  overlay.style.display = 'none'; // Sembunyikan overlay saat permainan dimulai
-  startButtonVisible = false;
- 
-});
-
 // Fungsi untuk mendeteksi tabrakan
 function detectCollision() {
   if (isGameRunning) {
@@ -373,7 +325,6 @@ function detectCollision() {
     const redKubusWidth = 17;
 
     if (distanceXToRedKubus < redKubusWidth / 1.9 && distanceZToRedKubus < 8.3) {
-      // Reset posisi kubus utama ke titik checkpoint (0, 0, -5)
       cube.position.copy(checkpointPosition);
     }
 
@@ -382,7 +333,6 @@ function detectCollision() {
     const redKubus2Width = 17;
 
     if (distanceXToRedKubus2 < redKubus2Width / 1.9 && distanceZToRedKubus2 < 8.4) {
-      // Reset posisi kubus utama ke titik checkpoint (0, 0, -5)
       cube.position.copy(checkpointPosition);
     }
 
@@ -392,22 +342,16 @@ function detectCollision() {
 
     if (distanceX < holeRadius && distanceZ < 1) {
       showSuccessMessage();
-      
     } else {
       if (obstacle.position.y <= 0) {
         const distanceXToObstacle = Math.abs(cube.position.x - obstacle.position.x);
         const distanceZToObstacle = Math.abs(cube.position.z - obstacle.position.z);
         const obstacleWidth = 20;
-
         if (distanceXToObstacle < obstacleWidth / 2 && distanceZToObstacle < 3) {
-          // Reset posisi kubus utama ke titik awal
           resetCubePosition();
-
         }
-        
       }
       
-
       const distanceXToAdditionalCube = Math.abs(cube.position.x - additionalCube.position.x);
       const distanceZToAdditionalCube = Math.abs(cube.position.z - additionalCube.position.z);
       const additionalCubeWidth = 1;
@@ -420,25 +364,9 @@ function detectCollision() {
   }
 }
 
-function removeAllInterval() {
-  clearInterval(intervalMaju);
-  clearInterval(intervalKiri);
-  clearInterval(intervalKanan);
-}
-
 function resetCubePosition() {
-  removeAllInterval();
   cube.position.set(0, 0, 50);
 }
-
-
-// Event listener untuk tombol "esc"
-// document.addEventListener('keydown', (event) => {
-//   if (event.key === 'Escape') {
-//     pauseGame();
-//   }
-// });
-
 
 function pauseGame() {
   pauseStartTime = Date.now();
@@ -448,7 +376,7 @@ function pauseGame() {
   overlay.style.display = 'flex'; // Mengatur overlay sebagai flex container
   overlay.style.flexDirection = 'column'; // Menjadikan anak elemen berada dalam satu kolom
   overlay.style.alignItems = 'center'; // Mengatur agar anak elemen berada di tengah-tengah
-  restartButton.style.display = 'none';
+  // restartButton.style.display = 'none';
 
   // Tombol RESUME
   if (!document.querySelector('#resumeButton')) {
@@ -506,7 +434,7 @@ function pauseGame() {
 
   isGameRunning = true;
   overlay.style.display = 'none';
-  restartButton.style.display = 'block';
+  // restartButton.style.display = 'block';
 
   // Hapus tombol "RESUME" dan "Quit"
   const resumeButton = document.querySelector('#resumeButton');
@@ -522,26 +450,6 @@ function pauseGame() {
   animate();
 }
 
-
-
-function quitGame() {
-  // Reset waktu dan hentikan permainan
-  gameStartTime = null;
-  isGameRunning = false;
-  overlay.style.display = 'none';
-  timerElement.textContent = 'Waktu: 0 detik'; // Reset waktu
-  
-  // Hapus tombol "RESUME" dan "Quit"
-  const resumeButton = document.querySelector('#resumeButton');
-  const quitButton = document.querySelector('#quitButton');
-  if (resumeButton) {
-    overlay.removeChild(resumeButton);
-  }
-  if (quitButton) {
-    overlay.removeChild(quitButton);
-  }}
-
-
 // Fungsi untuk menampilkan pesan keberhasilan dan tombol "MAIN LAGI"
 function showSuccessMessage() {
   successOverlay.style.display = 'block';
@@ -554,83 +462,41 @@ function showSuccessMessage() {
   var score = 0;
   var message = "NO POINT";
 
-  if(elapsedTime <= 10) {
-    score = 100;
-    message = "EXCELLENT";
-  } else if(elapsedTime <= 15) {
+  if(elapsedTime <= 15) {
     score = 90;
+    message = "EXCELLENT";
+  } else if(elapsedTime <= 20) {
+    score = 80;
     message = "GREAT";
   } else if(elapsedTime <= 25) {
-    score = 80;
+    score = 70;
     message = "GOOD"
   } else if(elapsedTime <= 35) {
-    score = 70;
+    score = 60;
     message = "NO BAD";
   } else {
-    score = 60;
+    score = 50;
     message = "YOU CAN BE BETTER NEXT TIME";
   }
 
+  const distanceX = cube.position.x - hole.position.x;
+  const distanceXAreas = Math.abs(distanceX);
+  const areaScore = 10 - parseFloat(distanceXAreas.toFixed(2)); 
+  score += areaScore;
+
   // Menampilkan skor waktu
   successMessage.innerHTML += '<br>Waktu : ' + elapsedTime.toFixed(2) + ' detik' + `<br> ${message} <br> Point Kamu : ${score}`;
-
   isGameRunning = false;
   if (startButtonVisible) {
     startButton.style.display = 'block'; // Tampilkan tombol "Start" jika tombol belum ditampilkan
   }
 }
 
-
-//function showFailureMessage() {
- // overlay.style.display = 'block';
-  //message.innerHTML = 'MAAF ANDA GAGAL';
- // restartButton.innerHTML = 'ULANGI';
- // restartButton.style.display = 'absolute';
- // message.style.display = 'block';
- // isGameRunning = false;
-//}
-
-// Variabel untuk mengontrol lompatan
-const jumpHeight = 2.5;
-
-
-// Variabel untuk mengatur kecepatan lompatan vertikal
-const jumpSpeed = 0.1;
-let isJumping = false;
-// Fungsi untuk mengatur lompatan
-function jump() {
-  isJumping = true;
-
-  function jumpAnimation() {
-    if (cube.position.y < jumpHeight) {
-      cube.position.y += jumpSpeed;
-    } else {
-      fall();
-    }
-  }
-
-  function jumpLoop() {
-    if (cube.position.y < jumpHeight) {
-      requestAnimationFrame(jumpLoop);
-      jumpAnimation();
-    } else {
-      fall();
-    }
-  }
-
-  jumpLoop();
-}
-
 // Event listener untuk tombol "MAIN LAGI"
 playAgainButton.addEventListener('click', () => {
-  resetGame();
+  location.reload();
 });
 
-
-// Event listener untuk tombol "ULANGI"
-restartButton.addEventListener('click', () => {
-  resetGame();
-});
   function resetGame() {
     // Reset posisi kubus ke posisi awal
     cube.position.set(0, 0, 50);
@@ -647,12 +513,8 @@ restartButton.addEventListener('click', () => {
     startGame();
   }
 
-
-
 // Kecepatan pergerakan bola
 const moveSpeed = 0.4;
-
-
 
 // Fungsi untuk menghitung waktu permainan
 function calculateGameTime() {
@@ -673,40 +535,7 @@ function startGame() {
   startButton.style.display = 'none';
 }
 
-function moveDepanKiri() {
-  if (cube.position.z - moveSpeed >= -22) {
-    cube.position.z -= moveSpeed;
-  }
-  if (cube.position.x - moveSpeed >= -9.60) {
-    cube.position.x -= moveSpeed;
-  }
-  updateCamera();
-
-}
-
-// Mendengarkan event keyboard untuk pergerakan
-const keyPressed = {};
-
-// document.addEventListener('keyup', (event) => {
-//   keyPressed[event.key] = false;
-// });
-
 document.addEventListener('keydown', (event) => {
-  if (!gameStartTime) {
-    startGame();
-  }
-
-
-  // keyPressed[event.key] = true;
-  
-  // if(keyPressed['w'] && keyPressed['a']) {
-  //   alert('wa')
-  //   moveDepanKiri();
-  // } else if(keyPressed['w']) {
-  //   alert('w');
-  //   moveForward();
-  // }
-
   switch (event.key) {
     case 'w':
       moveForward();
@@ -720,9 +549,6 @@ document.addEventListener('keydown', (event) => {
     case 'd':
       moveRight();
       break;
-    case ' ':
-      if (!isJumping) jump();
-      break;
     case 'Escape':
       pauseGame();
       break;
@@ -730,44 +556,6 @@ document.addEventListener('keydown', (event) => {
       break;
   }
 });
-
-const moveForwardButton = document.querySelector(".moving-option .w");
-const moveLeftButton = document.querySelector(".moving-option .a");
-const moveRightButton = document.querySelector(".moving-option .d");
-var intervalMaju;
-var intervalKiri;
-var intervalKanan;
-
-moveForwardButton.addEventListener("touchstart", function() {
-  removeAllInterval();
-  intervalMaju = setInterval(function() {
-    moveForward();
-  }, 70);
-});
-
-moveForwardButton.addEventListener("touchand", function() {
-  clearInterval(intervalMaju);
-})
-
-moveLeftButton.addEventListener("touchstart", function() {
-  intervalKiri = setInterval(function() {
-    moveLeft();
-  }, 70);
-});
-
-moveLeftButton.addEventListener("touchand", function() {
-  clearInterval(intervalKiri);
-});
-
-moveRightButton.addEventListener("touchstart", function() {
-  intervalKanan = setInterval(function() {
-    moveRight();
-  }, 70);
-});
-
-moveRightButton.addEventListener("touchand", function() {
-  clearInterval(intervalKanan);
-})
 
 // Fungsi untuk bergerak ke depan
 function moveForward() {
@@ -805,33 +593,6 @@ function moveRight() {
   }
 }
 
-
-// Fungsi untuk menjatuhkan bola
-function fall() {
-  const fallSpeed = 0.1;
-
-  function fallAnimation() {
-    if (cube.position.y > 0) {
-      cube.position.y -= fallSpeed;
-    } else {
-      isJumping = false;
-      cube.position.y = 0;
-    }
-  }
-
-  function fallLoop() {
-    if (cube.position.y > 0) {
-      requestAnimationFrame(fallLoop);
-      fallAnimation();
-    } else {
-      isJumping = false;
-      cube.position.y = 0;
-    }
-  }
-
-  fallLoop();
-}
-
 // Memanggil fungsi createCube untuk membuat kubus tambahan
 createCube(new THREE.Vector3(additionalCubeInitialX, 0.1, 0), new THREE.MeshBasicMaterial({ color: 0x800000 }));
 
@@ -840,6 +601,15 @@ function createCube(position, material) {
   additionalCube = new THREE.Mesh(geometry, material);
   additionalCube.position.copy(position);
   scene.add(additionalCube);
+}
+
+function countTimeOver() {
+  const elapsedTime = (Date.now() - gameStartTime) / 1000;
+  if(elapsedTime >= 20) {
+    alert("TIME OVER. Please Click OK to Continue. We will restart the game");
+    isGameRunning = false;
+    location.reload();
+  }
 }
 
 // Animasi permainan
@@ -880,14 +650,13 @@ function animate() {
     // Set posisi objek kubus tambahan berdasarkan pergerakan horizontal
     additionalCube.position.x = horizontalPosition;
 
-    // Tambahkan logika lainnya sesuai kebutuhan
-
     if (isLevel2) {
       const elapsedTime = Date.now() - level2StartTime;
       if (elapsedTime > level2DisplayTime) {
         isLevel2 = false; // Reset status Level 2 setelah durasi tampilan berakhir
       }
     }
+    countTimeOver();
 
     renderer.render(scene, camera);
   }
