@@ -302,9 +302,75 @@ startButton.addEventListener('click', () => {
 });
 overlay.appendChild(startButton);
 
+// Tambahkan variabel global untuk menyimpan objek Audio
+let collisionSound = new Audio('gagal.m4a');
+let obstacleCollisionSound = new Audio('gagal.m4a');
+let holeCollisionSound = new Audio('finish.m4a');
+let additionalCubeCollisionSound = new Audio('gagal.m4a');
+let kubuscheckCollisionSound = new Audio('checkpoint.m4a');
+let startGameSound = new Audio('musik.mp3');
+
+// Tentukan volume untuk masing-masing suara (antara 0 dan 1)
+collisionSound.volume = 0.8;
+obstacleCollisionSound.volume = 0.8;
+holeCollisionSound.volume = 1.0; // Maksimum volume
+additionalCubeCollisionSound.volume = 0.8;
+kubuscheckCollisionSound.volume = 0.4;
+startGameSound.volume = 0.3;
+
+// ...
+
+// Fungsi untuk memutar suara dengan durasi tertentu
+function playCollisionSound(duration) {
+  collisionSound.play();
+  setTimeout(() => {
+    collisionSound.pause();
+    collisionSound.currentTime = 0;
+  }, duration);
+}
+
+function playObstacleCollisionSound(duration) {
+  obstacleCollisionSound.play();
+  setTimeout(() => {
+    obstacleCollisionSound.pause();
+    obstacleCollisionSound.currentTime = 0;
+  }, duration);
+}
+
+function playHoleCollisionSound(duration) {
+  holeCollisionSound.play();
+  setTimeout(() => {
+    holeCollisionSound.pause();
+    holeCollisionSound.currentTime = 0;
+  }, duration);
+}
+
+function playAdditionalCubeCollisionSound(duration) {
+  additionalCubeCollisionSound.play();
+  setTimeout(() => {
+    additionalCubeCollisionSound.pause();
+    additionalCubeCollisionSound.currentTime = 0;
+  }, duration);
+}
+
+function playkubuscheckCollisionSound(duration) {
+  kubuscheckCollisionSound.play();
+  setTimeout(() => {
+    kubuscheckCollisionSound.pause();
+    kubuscheckCollisionSound.currentTime = 0;
+  }, duration);
+}
+
+function playStartGameSound() {
+  startGameSound.play();
+}
+
 // Fungsi untuk mendeteksi tabrakan
 function detectCollision() {
+  
   if (isGameRunning) {
+    playStartGameSound();
+    isGameRunning = true; 
     const distanceToCheckpoint = cube.position.distanceTo(checkpointPosition);
     const distanceXToKubusCheck = Math.abs(cube.position.x - kubuscheck.position.x);
     const distanceZToKubusCheck = Math.abs(cube.position.z - kubuscheck.position.z);
@@ -313,6 +379,7 @@ function detectCollision() {
     if (distanceXToKubusCheck < kubusCheckWidth / 1.9 && distanceZToKubusCheck < 1) {
       // Call showLevel2Message when the main cube collides with kubuscheck
       showLevel2Message();
+      playkubuscheckCollisionSound(3000);
     }
 
     if (distanceToCheckpoint < 5) {
@@ -326,8 +393,9 @@ function detectCollision() {
     const distanceZToRedKubus = Math.abs(cube.position.z - redKubus.position.z);
     const redKubusWidth = 17;
 
-    if (distanceXToRedKubus < redKubusWidth / 1.9 && distanceZToRedKubus < 8.3) {
+    if (distanceXToRedKubus < redKubusWidth / 1.9 && distanceZToRedKubus < 8.5) {
       cube.position.copy(checkpointPosition);
+      playCollisionSound(3000); // Play collision sound for 3 seconds
     }
 
     const distanceXToRedKubus2 = Math.abs(cube.position.x - redKubus2.position.x);
@@ -336,24 +404,28 @@ function detectCollision() {
 
     if (distanceXToRedKubus2 < redKubus2Width / 1.9 && distanceZToRedKubus2 < 8.4) {
       cube.position.copy(checkpointPosition);
+      playCollisionSound(3000); // Play collision sound for 3 seconds
     }
 
     const distanceX = cube.position.x - hole.position.x;
-    const distanceZ = cube.position.z - hole.position.z;
-    const holeRadius = 20;
+const distanceZ = cube.position.z - hole.position.z;
+const holeRadius = 20;
 
     if (distanceX < holeRadius && distanceZ < 1) {
       showSuccessMessage();
+      playHoleCollisionSound(5000); // Play collision sound for 3 seconds
     } else {
       if (obstacle.position.y <= 0) {
         const distanceXToObstacle = Math.abs(cube.position.x - obstacle.position.x);
         const distanceZToObstacle = Math.abs(cube.position.z - obstacle.position.z);
         const obstacleWidth = 20;
+
         if (distanceXToObstacle < obstacleWidth / 2 && distanceZToObstacle < 3) {
           resetCubePosition();
+          playObstacleCollisionSound(3000); // Play obstacle collision sound for 3 seconds
         }
       }
-      
+
       const distanceXToAdditionalCube = Math.abs(cube.position.x - additionalCube.position.x);
       const distanceZToAdditionalCube = Math.abs(cube.position.z - additionalCube.position.z);
       const additionalCubeWidth = 1;
@@ -361,10 +433,12 @@ function detectCollision() {
       if (distanceXToAdditionalCube < additionalCubeWidth / 2 && distanceZToAdditionalCube < 2) {
         // Reset posisi kubus utama ke titik awal
         resetCubePosition();
+        playAdditionalCubeCollisionSound(3000); // Play additionalCube collision sound for 3 seconds
       }
     }
   }
 }
+
 
 function resetCubePosition() {
   cube.position.set(0, 0, 50);
@@ -426,13 +500,13 @@ function pauseGame() {
   const resumeTime = Date.now();
 
   // Hitung selisih waktu sejak permainan di-pause
-  const pauseDuration = resumeTime - pauseStartTime;
+  const pauseDuration = resumeTime + pauseStartTime;
 
   // Tambahkan durasi pause ke elapsed time yang di-pause
   pausedElapsedTime += pauseDuration;
 
   // Atur ulang waktu awal permainan
-  gameStartTime = resumeTime - pausedElapsedTime;
+  //gameStartTime = resumeTime - pausedElapsedTime;
 
   isGameRunning = true;
   overlay.style.display = 'none';
@@ -464,16 +538,16 @@ function showSuccessMessage() {
   var score = 0;
   var message = "NO POINT";
 
-  if(elapsedTime <= 20) {
+  if(elapsedTime <= 15) {
     score = 90;
     message = "EXCELLENT";
-  } else if(elapsedTime <= 30) {
+  } else if(elapsedTime <= 20) {
     score = 80;
     message = "GREAT";
-  } else if(elapsedTime <= 35) {
+  } else if(elapsedTime <= 25) {
     score = 70;
     message = "GOOD"
-  } else if(elapsedTime <= 45) {
+  } else if(elapsedTime <= 35) {
     score = 60;
     message = "NO BAD";
   } else {
