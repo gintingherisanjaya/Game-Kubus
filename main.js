@@ -538,16 +538,16 @@ function showSuccessMessage() {
   var score = 0;
   var message = "NO POINT";
 
-  if(elapsedTime <= 15) {
+  if(elapsedTime <= 20) {
     score = 90;
     message = "EXCELLENT";
-  } else if(elapsedTime <= 20) {
+  } else if(elapsedTime <= 25) {
     score = 80;
     message = "GREAT";
-  } else if(elapsedTime <= 25) {
+  } else if(elapsedTime <= 33) {
     score = 70;
     message = "GOOD"
-  } else if(elapsedTime <= 35) {
+  } else if(elapsedTime <= 40) {
     score = 60;
     message = "NO BAD";
   } else {
