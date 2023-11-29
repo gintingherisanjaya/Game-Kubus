@@ -172,17 +172,19 @@ const hole = new THREE.Mesh(holeGeometry, holeMaterial);
 scene.add(hole);
 hole.position.set(0, 0, -70);
 
-// Membuat geometri persegi panjang
-const obstacleGeometry = new THREE.BoxGeometry(20, 1, 0.75); // Panjang 20, lebar 1, tinggi 1
+// Membuat geometri kubus baru
+const obstacleGeometry = new THREE.BoxGeometry(20, 1, 0.75); // Panjang 20, lebar 1, tinggi 5
 
-// Membuat material untuk persegi panjang (warna merah menyala)
-const obstacleMaterial = new THREE.MeshBasicMaterial({ color: 0xFF0000 }); // Warna merah menyala
+// Membuat material untuk persegi panjang menggunakan tekstur
+const obstacleTexture = new THREE.TextureLoader().load('5.jpg'); // Ganti 'venus.jpeg' dengan path file tekstur Anda
+const obstacleMaterial = new THREE.MeshBasicMaterial({ map: obstacleTexture });
 
-// Membuat objek rintangan
+// Membuat objek rintangan dengan geometri dan material yang telah dibuat
 const obstacle = new THREE.Mesh(obstacleGeometry, obstacleMaterial);
 
-// Menambahkan rintangan ke scene
+// Menambahkan rintangan ke dalam scene
 scene.add(obstacle);
+
 
 // Mengatur posisi rintangan
 obstacle.position.set(0, -1, 25); // Sesuaikan posisi sesuai kebutuhan
@@ -462,16 +464,16 @@ function showSuccessMessage() {
   var score = 0;
   var message = "NO POINT";
 
-  if(elapsedTime <= 15) {
+  if(elapsedTime <= 20) {
     score = 90;
     message = "EXCELLENT";
-  } else if(elapsedTime <= 20) {
+  } else if(elapsedTime <= 30) {
     score = 80;
     message = "GREAT";
-  } else if(elapsedTime <= 25) {
+  } else if(elapsedTime <= 35) {
     score = 70;
     message = "GOOD"
-  } else if(elapsedTime <= 35) {
+  } else if(elapsedTime <= 45) {
     score = 60;
     message = "NO BAD";
   } else {
@@ -594,18 +596,29 @@ function moveRight() {
 }
 
 // Memanggil fungsi createCube untuk membuat kubus tambahan
-createCube(new THREE.Vector3(additionalCubeInitialX, 0.1, 0), new THREE.MeshBasicMaterial({ color: 0x800000 }));
+// Memuat gambar sebagai tekstur untuk kubus tambahan
+const additionalCubeTextureLoader = new THREE.TextureLoader();
+const additionalCubeTexture = additionalCubeTextureLoader.load('5.jpg'); // Ganti 'texture.jpg' dengan path file gambar Anda
+
+// Membuat material dengan tekstur untuk kubus tambahan
+const additionalCubeMaterial = new THREE.MeshBasicMaterial({ map: additionalCubeTexture });
+
+// Menggunakan material baru pada kubus tambahan
+createCube(new THREE.Vector3(additionalCubeInitialX, 0.1, 0), additionalCubeMaterial);
+
+
+
 
 // Fungsi untuk membuat kubus tambahan
 function createCube(position, material) {
-  additionalCube = new THREE.Mesh(geometry, material);
+  additionalCube = new THREE.Mesh(geometry, additionalCubeMaterial);
   additionalCube.position.copy(position);
   scene.add(additionalCube);
 }
 
 function countTimeOver() {
   const elapsedTime = (Date.now() - gameStartTime) / 1000;
-  if(elapsedTime >= 20) {
+  if(elapsedTime >= 80) {
     alert("TIME OVER. Please Click OK to Continue. We will restart the game");
     isGameRunning = false;
     location.reload();
